@@ -35,7 +35,7 @@ This retrieves the Power Up data
 ## Binary Power Up In Progress Sensor
 
 ```
-{% raw %}
+[//]: # ({% raw %})
     - name: "Power Up In Progress"
       state: >
         {% set n = now() | as_timestamp %}
@@ -61,7 +61,7 @@ This retrieves the Power Up data
           {% endif %}
         start_time: "{{state_attr('sensor.power_up_times', 'start') | as_datetime }}"
         end_time: "{{state_attr('sensor.power_up_times', 'end') | as_datetime }}"
-{% endraw %}
+[//]: # {% endraw %}
 ```
 
 This converts the previous sensor in to something a bit easier to work with.  The sensor will turn `ON` at the start of the Power Up and `OFF` at the end.  There are four attributes of this sensor:
