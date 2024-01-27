@@ -62,7 +62,11 @@ This retrieves the Power Up data
         end_time: "{{state_attr('sensor.power_up_times', 'end') | as_datetime }}"
 ```
 
-This coverts the previous sensor in to something a bit easier to work with.  The sensor will turn `ON` at the start of the Power Up and `OFF` at the end.  There are two attributes of this sensor; the overall duration of the Power Up and the amount of time remaining until the end.
+This converts the previous sensor in to something a bit easier to work with.  The sensor will turn `ON` at the start of the Power Up and `OFF` at the end.  There are four attributes of this sensor:
+ - the overall duration of the Power Up
+ - the amount of time remaining until the end of the Power Up
+ - The start time of the Power Up
+ - The end time of the Power Up
 
 
 # Affiliate Code
