@@ -13,6 +13,60 @@ This file is published from and hosted by Github, so should have good reliabilit
 
 You can watch the `powerup.json` file for changes from RSS with Github's atom feed: https://github.com/8none1/octopus_powerups/commits/main/powerup.json.atom
 
+# Home Assistant
+
+I have two sensors to consume this data.  
+
+## REST sensor to parse the JSON
+
+```
+  - platform: rest
+    name: "Power Up Times"
+    resource: "https://www.whizzy.org/octopus_powerups/powerup.json"
+    scan_interval: 900
+    json_attributes_path: "$.[0]"
+    json_attributes:
+      - start
+      - end
+```
+
+This retrieves the Power Up data
+
+## Binary Power Up In Progress Sensor
+
+```
+    - name: "Power Up In Progress"
+      state: >
+        {% set n = now() | as_timestamp %}
+        {% set st  = state_attr('sensor.power_up_times', 'start') | as_timestamp %}
+        {% set end = state_attr('sensor.power_up_times', 'end')   | as_timestamp %}
+        {% if n >= st and n < end %}
+          True
+        {% else %}
+          False
+        {% endif %}
+      attributes:
+        duration_mins: >
+          {% set st  = state_attr('sensor.power_up_times', 'start') | as_timestamp %}
+          {% set end = state_attr('sensor.power_up_times', 'end')   | as_timestamp %}
+          {{ ((end - st) / 60) | int }}
+        duration_remaining: >
+          {% if this.state == 'on' %}
+            {% set n = now() | as_timestamp %}
+            {% set end = state_attr('sensor.power_up_times', 'end') | as_timestamp %}
+            {{ ((end - n) / 60) | int }}
+          {% else %}
+            {{ False }}
+          {% endif %}
+        start_time: "{{state_attr('sensor.power_up_times', 'start') | as_datetime }}"
+        end_time: "{{state_attr('sensor.power_up_times', 'end') | as_datetime }}"
+```
+
+This coverts the previous sensor in to something a bit easier to work with.  The sensor will turn `ON` at the start of the Power Up and `OFF` at the end.  There are two attributes of this sensor; the overall duration of the Power Up and the amount of time remaining until the end.
+
+
+# Affiliate Code
+
 You can get £50 credit if you sign up to Octopus using this link: https://share.octopus.energy/great-kiwi-634
 (and so do I).
 
