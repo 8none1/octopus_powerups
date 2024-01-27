@@ -8,10 +8,10 @@ When there is a Power Up in my region a script runs on my local machine which sc
  * If there are multiple Power Ups known the first three will be in an array in the json file. As one ends then next one will be added.  They should always be sorted in most recent first order.
  * You still need to manually sign up for the Power Up via the link in the email.
 
-The main JSON file will be available at this URL: https://www.whizzy.org/octopus_powerups/powerup.json
+The main JSON file is available at this URL: (https://www.whizzy.org/octopus_powerups/powerup.json)
 This file is published from and hosted by Github, so should have good reliability and scalability.
 
-You can watch the `powerup.json` file for changes from RSS with Github's atom feed: https://github.com/8none1/octopus_powerups/commits/main/powerup.json.atom
+You can watch the `powerup.json` file for changes from RSS with Github's atom feed: (https://github.com/8none1/octopus_powerups/commits/main/powerup.json.atom)
 
 # Home Assistant
 
@@ -70,9 +70,13 @@ This converts the previous sensor in to something a bit easier to work with.  Th
  - The start time of the Power Up
  - The end time of the Power Up
 
+# Github Project
+
+The main Github page is here: (https://github.com/8none1/octopus_powerups)
 
 # Affiliate Code
 
-You can get £50 credit if you sign up to Octopus using this link: https://share.octopus.energy/great-kiwi-634
+You can get £50 credit if you sign up to Octopus using this link: (https://share.octopus.energy/great-kiwi-634)
 (and so do I).
+
 
