@@ -22,6 +22,7 @@ I have two sensors to consume this data.
 ```
   - platform: rest
     name: "Power Up Times"
+    unique_id: octopus_power_up_times
     resource: "https://www.whizzy.org/octopus_powerups/powerup.json"
     scan_interval: 900
     json_attributes_path: "$.[0]"
