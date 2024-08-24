@@ -1,7 +1,7 @@
 # octopus_powerups
 Programmatic access to Octopus Power Up time data.
 
-When there is a Power Up in my region a script runs on my local machine which scrapes the email, converts the time data into ISO datetimes and dumps it in `powerup.json`.  That file is a array of JSON objects.  The keys are `start` and `end`.  The timezone should always be in UTC and so you might need to check your conversions in the summer.
+When there is a Power Up in my region (eastern England) a script runs on my local machine which scrapes the email, converts the time data into ISO datetimes and dumps it in `powerup.json`.  That file is a array of JSON objects.  The keys are `start` and `end`.  The timezone should always be in UTC and so you might need to check your conversions in the summer.
 
  * Once a Power Up has ended that session is removed from the JSON file.
  * If there are no Power Ups known the JSON file will be a blank array. i.e. `[]`
