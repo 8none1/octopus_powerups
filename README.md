@@ -75,6 +75,12 @@ This converts the previous sensor in to something a bit easier to work with.  Th
 
 The main Github page is here: [https://github.com/8none1/octopus_powerups](https://github.com/8none1/octopus_powerups)
 
+# The email scraper
+
+If you're interested in hosting this yourself, you can read more about how the Power Up emails are scraped in this issue:
+
+https://github.com/8none1/octopus_powerups/issues/1#issuecomment-2308447124
+
 # Affiliate Code
 
 You can get £50 credit if you sign up to Octopus using this link: [https://share.octopus.energy/great-kiwi-634](https://share.octopus.energy/great-kiwi-634)
