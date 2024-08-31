@@ -35,6 +35,16 @@ This retrieves the Power Up data
 
 ## Binary Power Up In Progress Sensor
 
+Place this `binary_sensor` in the `template` section.  e.g.
+
+```
+template:
+  ...
+  - binary_sensor:
+    - name: "Power Up In Progress"
+    <as below>
+```
+
 [//]: # ({% raw %})
 ```
     - name: "Power Up In Progress"
