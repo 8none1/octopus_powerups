@@ -144,7 +144,7 @@ function generateJson(){
     var authentic = checkHeaders(message.getHeader('ARC-Authentication-Results'));
     var plain_body = message.getPlainBody();
     //Logger.log("Plain body: " + plain_body);
-    const datetime_line_finder_regex = /\*Fill your boots on.+?\.\*/s;
+    const datetime_line_finder_regex = /Fill your boots on.+?\./s;
     var extract = plain_body.match(datetime_line_finder_regex)[0];
     Logger.log("Extracted text: " + extract);
     const day_month_regex = /([0-9]{2}|[1-9]) (January|February|March|April|May|June|July|August|September|October|November|December)/s;
