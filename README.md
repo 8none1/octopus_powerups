@@ -45,7 +45,7 @@ template:
     <as below>
 ```
 
-The binary sensors has an `ON` or `OFF` state and includes attributes for the start and stop times as datetimes the total durationa and the time remaning once `ON`.
+The binary sensors has an `ON` or `OFF` state and includes attributes for the start and stop times as datetimes the total duration and the time remaning once `ON`.
 
 [//]: # ({% raw %})
 ```
