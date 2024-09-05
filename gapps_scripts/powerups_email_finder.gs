@@ -32,11 +32,21 @@ function convertTime(time_string) {
 function sortJsonArray(jsonString) {
   Logger.log("Incoming JsonString: "+jsonString);
   const jsonArray = JSON.parse(jsonString);
-  jsonArray.sort((a, b) => {
-    const dateA = new Date(a.start);
-    const dateB = new Date(b.start);
-    return dateA - dateB;
-  });
+  if (jsonArray.length == 0) {
+    Logger.log("No powerups found, returning special empty object")
+    var emptyRepresentation = {};
+    emptyRepresentation['start'] = null;
+    emptyRepresentation['end'] = null;
+    var emptyPowerups = [];
+    emptyPowerups.push(emptyRepresentation);
+    return JSON.stringify(emptyPowerups);
+  } else {
+    jsonArray.sort((a, b) => {
+      const dateA = new Date(a.start);
+      const dateB = new Date(b.start);
+      return dateA - dateB;
+    });
+  }
   const sortedJsonString = JSON.stringify(jsonArray);
   Logger.log("Sorted JSON string: " + sortedJsonString);
   return sortedJsonString;
@@ -115,4 +125,3 @@ function doGet(){
   var sortedJsonString = sortJsonArray(jsonString);
   return ContentService.createTextOutput(sortedJsonString).setMimeType(ContentService.MimeType.JSON);
   }
-

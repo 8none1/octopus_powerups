@@ -111,14 +111,25 @@ function testTimeFinder() {
   Logger.log(findTimeInString("2", "PM"));
   Logger.log(findTimeInString("14", "PM"));
 }
+
 function sortJsonArray(jsonString) {
   Logger.log("Incoming JsonString: "+jsonString);
   const jsonArray = JSON.parse(jsonString);
-  jsonArray.sort((a, b) => {
-    const dateA = new Date(a.start);
-    const dateB = new Date(b.start);
-    return dateA - dateB;
-  });
+  if (jsonArray.length == 0) {
+    Logger.log("No powerups found, returning special empty object")
+    var emptyRepresentation = {};
+    emptyRepresentation['start'] = null;
+    emptyRepresentation['end'] = null;
+    var emptyPowerups = [];
+    emptyPowerups.push(emptyRepresentation);
+    return JSON.stringify(emptyPowerups);
+  } else {
+    jsonArray.sort((a, b) => {
+      const dateA = new Date(a.start);
+      const dateB = new Date(b.start);
+      return dateA - dateB;
+    });
+  }
   const sortedJsonString = JSON.stringify(jsonArray);
   Logger.log("Sorted JSON string: " + sortedJsonString);
   return sortedJsonString;
@@ -143,7 +154,7 @@ function generateJson(){
   messages.forEach(function(message) {
     var authentic = checkHeaders(message.getHeader('ARC-Authentication-Results'));
     var plain_body = message.getPlainBody();
-    //Logger.log("Plain body: " + plain_body);
+    Logger.log("Plain body: " + plain_body);
     const datetime_line_finder_regex = /Fill your boots on.+?\./s;
     var extract = plain_body.match(datetime_line_finder_regex)[0];
     Logger.log("Extracted text: " + extract);
