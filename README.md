@@ -1,7 +1,7 @@
 # octopus_powerups
 Programmatic access to Octopus Power Up and Free Electricty Session time data.
 
-When there is a Power Up in my region (eastern England) a script runs on my local machine which scrapes the email, converts the time data into ISO datetimes and dumps it in `powerup.json`.  That file is a array of JSON objects.  The keys are `start` and `end`.  The timezone should always be in UTC and so you might need to check your conversions in the summer.  Using the template filter `as_timestamp` or `as_datetime` will enable you to convert from UTC to local time easily.
+When there is a Power Up in my region (eastern England) or a Free Electricity Session a script runs on my local machine which scrapes the email, converts the time data into ISO datetimes and dumps it in to a JSON object.  That file is a array of JSON objects.  The keys are `start` and `end`.  The timezone should always be in UTC and so you might need to check your conversions in the summer.  Using the template filter `as_timestamp` or `as_datetime` will enable you to convert from UTC to local time easily.
 
 *NB: You MUST still sign up for the Power Up from the email you received.*
 
@@ -10,8 +10,8 @@ The sign up URL in the email includes a bunch of information which identifies yo
 You *do not* need to sign up for Free Electricity Sessions if you are subscribed via Octoplus.
 
  * Once a Power Up has ended that session is removed from the JSON file.
- * If there are no Power Ups known the JSON file will be a blank array. i.e. `[]`
- * If there are multiple Power Ups known the first three will be in an array in the json file. As one ends then next one will be added.  They should always be sorted in most recent first order.
+ * If there are no Power Ups known the JSON file will be contain `null` for the start and end times.
+ * If there are multiple sessions known the first three will be in an array in the json file. As one ends then next one will be added.  They should always be sorted in most recent first order.
  * You still need to manually sign up for the Power Up via the link in the email.
 
 The main Power Ups JSON file is available at this URL: [https://www.whizzy.org/octopus_powerups/powerup.json](https://www.whizzy.org/octopus_powerups/powerup.json)
@@ -21,6 +21,11 @@ The main Free Electricity Sessions JSON file is available at this URL: [https://
 These files are published from and hosted by Github, so should have good reliability and scalability.
 
 You can watch the `powerup.json` file for changes from RSS with Github's atom feed: [https://github.com/8none1/octopus_powerups/commits/main/powerup.json.atom](https://github.com/8none1/octopus_powerups/commits/main/powerup.json.atom)
+
+There are two accompanying blog posts which explain how to use these feeds to trigger your own automations in Home Assistant.
+
+* This post explains how the data is extracted from the email:  [https://www.whizzy.org/2024-01-24-powerups-api/]
+* This post explains how to create Home Assistant sensors that turn on and off at the start and end of a session: [https://www.whizzy.org/2024-09-14-free-electricity-sessions/]
 
 # Home Assistant
 
