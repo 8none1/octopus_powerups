@@ -70,8 +70,8 @@ The binary sensors has an `ON` or `OFF` state and includes attributes for the st
     - name: "Power Up In Progress"
       state: >
         {% set n = now() | as_timestamp %}
-        {% set st  = state_attr('sensor.power_up_times', 'start') | as_timestamp %}
-        {% set end = state_attr('sensor.power_up_times', 'end')   | as_timestamp %}
+        {% set st  = state_attr('sensor.power_up_times', 'start') | as_timestamp(0) %}
+        {% set end = state_attr('sensor.power_up_times', 'end')   | as_timestamp(0) %}
         {% if n >= st and n < end %}
           True
         {% else %}
@@ -79,13 +79,13 @@ The binary sensors has an `ON` or `OFF` state and includes attributes for the st
         {% endif %}
       attributes:
         duration_mins: >
-          {% set st  = state_attr('sensor.power_up_times', 'start') | as_timestamp %}
-          {% set end = state_attr('sensor.power_up_times', 'end')   | as_timestamp %}
+          {% set st  = state_attr('sensor.power_up_times', 'start') | as_timestamp(0) %}
+          {% set end = state_attr('sensor.power_up_times', 'end')   | as_timestamp(0) %}
           {{ ((end - st) / 60) | int }}
         duration_remaining: >
           {% if this.state == 'on' %}
             {% set n = now() | as_timestamp %}
-            {% set end = state_attr('sensor.power_up_times', 'end') | as_timestamp %}
+            {% set end = state_attr('sensor.power_up_times', 'end') | as_timestamp(0) %}
             {{ ((end - n) / 60) | int }}
           {% else %}
             {{ False }}
