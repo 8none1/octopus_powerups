@@ -68,14 +68,17 @@ The binary sensors has an `ON` or `OFF` state and includes attributes for the st
 [//]: # ({% raw %})
 ```
     - name: "Power Up In Progress"
+
       state: >
         {% set n = now() | as_timestamp %}
-        {% set st  = state_attr('sensor.power_up_times', 'start') | as_timestamp(0) %}
-        {% set end = state_attr('sensor.power_up_times', 'end')   | as_timestamp(0) %}
-        {% if n >= st and n < end %}
-          True
-        {% else %}
-          False
+        {% set st  = state_attr('sensor.power_up_times', 'start') %}
+        {% set end = state_attr('sensor.power_up_times', 'end')  %}
+        {% if st != none %}
+          {% if n >= as_timestamp(st) and n < as_timestamp(end) %}
+            True
+          {% else %}
+             False
+          {% endif %}
         {% endif %}
       attributes:
         duration_mins: >
