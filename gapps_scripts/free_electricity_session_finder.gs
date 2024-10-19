@@ -1,7 +1,18 @@
 function getPowerUpEmails() {
   var threads = GmailApp.search('Fill your boots on',0, 3);
+  var threads2 = GmailApp.search('Shift your electricity use to', 0, 3);
   var messages = [];
   threads.forEach(function(thread) {
+    if (thread.isInInbox()) {
+      // Is it actually an email, not a chat?
+      msg = thread.getMessages()[0];
+      sender = msg.getFrom();
+      Logger.log("Message from: " + sender);
+      messages.push(msg);
+    }
+  });
+
+  threads2.forEach(function(thread) {
     if (thread.isInInbox()) {
       // Is it actually an email, not a chat?
       msg = thread.getMessages()[0];
@@ -155,8 +166,30 @@ function generateJson(){
     var authentic = checkHeaders(message.getHeader('ARC-Authentication-Results'));
     var plain_body = message.getPlainBody();
     Logger.log("Plain body: " + plain_body);
-    const datetime_line_finder_regex = /Fill your boots on.+?\./s;
-    var extract = plain_body.match(datetime_line_finder_regex)[0];
+    const fill_your_boots_finder = /Fill your boots on.+?\./s;
+    const shift_your_electricity_use_finder = /Shift your electricity use to.+?\./s;
+    // Are there any matches before we proceed?
+    var boots_match = plain_body.match(fill_your_boots_finder);
+    var shift_match = plain_body.match(shift_your_electricity_use_finder);
+    Logger.log(boots_match);
+    Logger.log(shift_match);
+
+    if (boots_match) {
+      var extract = plain_body.match(fill_your_boots_finder)[0];
+    }
+    else if (shift_match) {
+      var extract = plain_body.match(shift_your_electricity_use_finder)[0];
+    } else {
+      return
+    }
+    
+   
+    // if (fill_your_boots_extract.length < 1) {
+    //   if (shift_your_electricity_use_extract.length > 0) {
+    //     fill_your_boots_extract = shift_your_electricity_use_extract;
+    //   }
+    // }
+
     Logger.log("Extracted text: " + extract);
     const day_month_regex = /([0-9]{2}|[1-9]) (January|February|March|April|May|June|July|August|September|October|November|December)/s;
     var day_month = extract.match(day_month_regex);
@@ -230,4 +263,3 @@ function doGet(){
   var sortedJsonString = sortJsonArray(jsonString);
   return ContentService.createTextOutput(sortedJsonString).setMimeType(ContentService.MimeType.JSON);
   }
-
