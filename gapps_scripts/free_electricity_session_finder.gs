@@ -1,5 +1,6 @@
 function getPowerUpEmails() {
-  var threads = GmailApp.search('Fill your boots on',0, 3);
+  // var threads = GmailApp.search('Fill your boots on',0, 3);
+  var threads = GmailApp.search('Use more power on',0, 3);
   var threads2 = GmailApp.search('Shift your electricity use to', 0, 3);
   var messages = [];
   threads.forEach(function(thread) {
@@ -168,17 +169,22 @@ function generateJson(){
     Logger.log("Plain body: " + plain_body);
     const fill_your_boots_finder = /Fill your boots on.+?\./s;
     const shift_your_electricity_use_finder = /Shift your electricity use to.+?\./s;
+    const use_more_power_on_finder = /Use more power on.+?\./s;
     // Are there any matches before we proceed?
     var boots_match = plain_body.match(fill_your_boots_finder);
     var shift_match = plain_body.match(shift_your_electricity_use_finder);
+    var use_more_match = plain_body.match(use_more_power_on_finder);
     Logger.log(boots_match);
     Logger.log(shift_match);
+    Logger.log(use_more_match);
 
     if (boots_match) {
       var extract = plain_body.match(fill_your_boots_finder)[0];
     }
     else if (shift_match) {
       var extract = plain_body.match(shift_your_electricity_use_finder)[0];
+    } else if (use_more_match) {
+      var extract = plain_body.match(use_more_power_on_finder)[0];
     } else {
       return
     }
