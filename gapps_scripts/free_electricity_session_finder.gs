@@ -7,9 +7,16 @@ function getPowerUpEmails() {
     if (thread.isInInbox()) {
       // Is it actually an email, not a chat?
       msg = thread.getMessages()[0];
-      sender = msg.getFrom();
-      Logger.log("Message from: " + sender);
-      messages.push(msg);
+      var sentDate = msg.getDate();
+      var oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      if (sentDate < oneWeekAgo) {
+        Logger.log("Message is too old, skipping");
+      } else {
+        sender = msg.getFrom();
+        Logger.log("Message from: " + sender);
+        messages.push(msg);
+      }
     }
   });
 
@@ -17,9 +24,16 @@ function getPowerUpEmails() {
     if (thread.isInInbox()) {
       // Is it actually an email, not a chat?
       msg = thread.getMessages()[0];
-      sender = msg.getFrom();
-      Logger.log("Message from: " + sender);
-      messages.push(msg);
+      var sentDate = msg.getDate();
+      var oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      if (sentDate < oneWeekAgo) {
+        Logger.log("Message is too old, skipping");
+      } else {
+        sender = msg.getFrom();
+        Logger.log("Message from: " + sender);
+        messages.push(msg);
+      }
     }
   });
   return messages;
