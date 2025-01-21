@@ -1,7 +1,7 @@
 # octopus_powerups
 Programmatic access to Octopus Power Up and Free Electricty Session time data.
 
-When there is a Power Up in my region (eastern England) or a Free Electricity Session a script runs on my local machine which scrapes the email, converts the time data into ISO datetimes and dumps it in to a JSON object.  That file is a array of JSON objects.  The keys are `start` and `end`.  The timezone should always be in UTC and so you might need to check your conversions in the summer.  Using the template filter `as_timestamp` or `as_datetime` will enable you to convert from UTC to local time easily.
+When there is a Power Up in my region (eastern England) or a Free Electricity Session, a script runs on my local machine which scrapes the email, converts the time data into ISO datetimes and dumps it in to a JSON object.  That file is a array of JSON objects.  The keys are `start` and `end`.  The timezone should always be in UTC and so you might need to check your conversions in the summer.  Using the template filter `as_timestamp` or `as_datetime` will enable you to convert from UTC to local time easily.
 
 *NB: You MUST still sign up for the Power Up from the email you received.*
 
@@ -33,7 +33,7 @@ I have two sensors to consume this data.
 
 ## REST sensor to parse the JSON
 
-```
+```yaml
   - platform: rest
     name: "Power Up Times"
     unique_id: octopus_power_up_times
@@ -45,7 +45,7 @@ I have two sensors to consume this data.
       - end
 ```
 
-This retrieves the Power Up data
+This retrieves the Power Up data.
 
 ## Binary Power Up In Progress Sensor
 
@@ -53,7 +53,7 @@ These suggested sensors will work for Power Ups or Free Electricity Sessions.  T
 
 Place this `binary_sensor` in the `template` section of your `configuration.yaml`.  e.g.
 
-```
+```yaml
 ...
 template:
   ...
@@ -66,7 +66,7 @@ template:
 The binary sensors has an `ON` or `OFF` state and includes attributes for the start and stop times as datetimes the total duration and the time remaning once `ON`.
 
 [//]: # ({% raw %})
-```
+```yaml
     - name: "Power Up In Progress"
 
       state: >
@@ -104,9 +104,9 @@ This converts the previous sensor in to something a bit easier to work with.  Th
  - The start time of the Power Up
  - The end time of the Power Up
 
-# Github Project
+# GitHub Project
 
-The main Github page is here: [https://github.com/8none1/octopus_powerups](https://github.com/8none1/octopus_powerups)
+The main GitHub page is here: [https://github.com/8none1/octopus_powerups](https://github.com/8none1/octopus_powerups)
 
 # The email scraper
 
@@ -118,5 +118,3 @@ https://github.com/8none1/octopus_powerups/issues/1#issuecomment-2308447124
 
 You can get £50 credit if you sign up to Octopus using this link: [https://share.octopus.energy/great-kiwi-634](https://share.octopus.energy/great-kiwi-634)
 (and so do I).
-
-
