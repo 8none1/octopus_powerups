@@ -1,7 +1,7 @@
 function getPowerUpEmails() {
-  // var threads = GmailApp.search('Fill your boots on',0, 3);
-  var threads = GmailApp.search('Use more power on',0, 3);
-  var threads2 = GmailApp.search('Shift your electricity use to', 0, 3);
+  var threads = GmailApp.search('Fill your boots on',0, 3);
+  //var threads = GmailApp.search('Use more power on',0, 3);
+  //var threads2 = GmailApp.search('Shift your electricity use to', 0, 3);
   var messages = [];
   threads.forEach(function(thread) {
     if (thread.isInInbox()) {
@@ -20,22 +20,22 @@ function getPowerUpEmails() {
     }
   });
 
-  threads2.forEach(function(thread) {
-    if (thread.isInInbox()) {
-      // Is it actually an email, not a chat?
-      msg = thread.getMessages()[0];
-      var sentDate = msg.getDate();
-      var oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      if (sentDate < oneWeekAgo) {
-        Logger.log("Message is too old, skipping");
-      } else {
-        sender = msg.getFrom();
-        Logger.log("Message from: " + sender);
-        messages.push(msg);
-      }
-    }
-  });
+  // threads2.forEach(function(thread) {
+  //   if (thread.isInInbox()) {
+  //     // Is it actually an email, not a chat?
+  //     msg = thread.getMessages()[0];
+  //     var sentDate = msg.getDate();
+  //     var oneWeekAgo = new Date();
+  //     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  //     if (sentDate < oneWeekAgo) {
+  //       Logger.log("Message is too old, skipping");
+  //     } else {
+  //       sender = msg.getFrom();
+  //       Logger.log("Message from: " + sender);
+  //       messages.push(msg);
+  //     }
+  //   }
+  // });
   return messages;
 }
 
@@ -173,6 +173,34 @@ function checkHeaders(headers) {
   // Logger.log(dmarc);
 };
 
+function dateMatch_dd_mmmm(extracted_text){
+    const day_month_regex = /([0-9]{2}|[1-9]) (January|February|March|April|May|June|July|August|September|October|November|December)/s;
+    var day_month = extracted_text.match(day_month_regex);
+    if (!day_month || day_month.length < 3) {
+      Logger.log("Error: No matching date information found.")
+      return false;
+    }
+    var i = extracted_text.indexOf(day_month[2]);
+    var time_text = extract.slice(i + month_name.length);
+    day_month.push(time_text);
+    return day_month;
+};
+
+function dateMatch_dddd_dd_mmmm(extracted_text){
+    const day_month_regex = /(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)?\s*([0-9]{1,2})(st|nd|rd|th)?\s+(January|February|March|April|May|June|July|August|September|October|November|December)/i;
+    var day_month = extracted_text.match(day_month_regex);
+    Logger.log("XXX "+day_month);
+    if (!day_month || day_month.length < 3) {
+      Logger.log("Error: No matching date information found.")
+      return false;
+    }
+    const time_range_regex = /(\d{1,2}[:.]?\d{0,2})-(\d{1,2}[:.]?\d{0,2})([ap]m)/i;
+    const time_text = extracted_text.match(time_range_regex);
+
+    return [day_month[0], day_month[1], day_month[3], time_text];
+}
+
+
 function generateJson(){
   var messages = getPowerUpEmails();
   Logger.log(messages);
@@ -184,21 +212,25 @@ function generateJson(){
     const fill_your_boots_finder = /Fill your boots on.+?\./s;
     const shift_your_electricity_use_finder = /Shift your electricity use to.+?\./s;
     const use_more_power_on_finder = /Use more power on.+?\./s;
+    const free_electricty_session_finder = /Free Electricity Session \d{1,2}(:\d{2})?-\d{1,2}(:\d{2})?[ap]m, \w+ \d{1,2}(st|nd|rd|th)? (January|February|March|April|May|June|July|August|September|October|November|December)!?/i;
     // Are there any matches before we proceed?
-    var boots_match = plain_body.match(fill_your_boots_finder);
-    var shift_match = plain_body.match(shift_your_electricity_use_finder);
+    var boots_match =    plain_body.match(fill_your_boots_finder);
+    var shift_match =    plain_body.match(shift_your_electricity_use_finder);
+    var fes_match =      plain_body.match(free_electricty_session_finder)
     var use_more_match = plain_body.match(use_more_power_on_finder);
     Logger.log(boots_match);
     Logger.log(shift_match);
+    Logger.log(fes_match);
     Logger.log(use_more_match);
 
     if (boots_match) {
       var extract = plain_body.match(fill_your_boots_finder)[0];
-    }
-    else if (shift_match) {
+    } else if (shift_match) {
       var extract = plain_body.match(shift_your_electricity_use_finder)[0];
     } else if (use_more_match) {
       var extract = plain_body.match(use_more_power_on_finder)[0];
+    } else if (fes_match) {
+      var extract = plain_body.match(free_electricty_session_finder)[0];
     } else {
       return
     }
@@ -211,20 +243,27 @@ function generateJson(){
     // }
 
     Logger.log("Extracted text: " + extract);
-    const day_month_regex = /([0-9]{2}|[1-9]) (January|February|March|April|May|June|July|August|September|October|November|December)/s;
-    var day_month = extract.match(day_month_regex);
-    if (day_month.length < 3) {
-      Logger.log("Error: No matching date information found.")
-      return False;
+    
+    const day_month = [dateMatch_dd_mmmm, dateMatch_dddd_dd_mmmm].map(fn => fn(extract)).find(res => res);
+    if (!day_month) {
+      Logger.log("Failed to extract date");
+      return false;
     }
+
     // (probably) the full text is in index 0, the day of month in 1 and the month name in 2
     Logger.log("Day Month text: " + day_month[0]);
     const day_of_month = day_month[1];
-    const month_name = day_month[2];
+    const month_name =   day_month[2];
+    var time_text =    day_month[day_month.length -1][0];
     Logger.log("Day of month:" + day_of_month);
     Logger.log("Month name: " + month_name);
-    var i = extract.indexOf(month_name);
-    var time_text = extract.slice(i + month_name.length);
+    Logger.log("Time text: "+ time_text);
+
+    // This is trying to extract the time text from the extract
+    //var i = extract.indexOf(month_name);
+    //var time_text = extract.slice(i + month_name.length);
+    
+    
     // >>> THIS IS THE MAIN REGEX FOR FINDING THE TIMES IN THE EMAIL... <<<
     time_text = time_text.match(/(\d{1,2}|\d{1,2}:\d{2})-(\d{1,2}|\d{1,2}:\d{2})([ap][m])/i)[0];
     Logger.log("Time text: " + time_text);
