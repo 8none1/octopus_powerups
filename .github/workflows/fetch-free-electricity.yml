@@ -6,6 +6,9 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:  # Allow manual trigger
 
+permissions:
+  contents: write  # Allow the workflow to push changes
+
 jobs:
   fetch-events:
     runs-on: ubuntu-latest
