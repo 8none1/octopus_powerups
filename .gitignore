@@ -1,0 +1,4 @@
+.claude/tmp
+
+# Python virtual environments
+graphql/venv/
