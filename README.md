@@ -82,7 +82,7 @@ There are several accompanying blog posts which explain how to use these feeds t
 
 - **Original email parsing approach**: [Power Ups API](https://www.whizzy.org/2024-01-24-powerups-api/)
 - **Home Assistant integration guide**: [Free Electricity Sessions](https://www.whizzy.org/2024-09-14-free-electricity-sessions/)
-- **GraphQL API discovery** (coming soon): Announcement of the official Octopus Energy GraphQL API for Free Electricity Sessions
+- **GraphQL API discovery**: [Official Octopus Energy GraphQL API for Free Electricity Sessions](https://www.whizzy.org/2025-11-10-octopus-graphql/)
 
 ## Home Assistant Integration
 
