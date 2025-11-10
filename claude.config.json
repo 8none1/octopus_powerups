@@ -1,0 +1,4 @@
+{
+  "context_directories": [".claude"],
+  "instructions": "Use files in .claude/ and subdirectories to support development in this repo"
+}
