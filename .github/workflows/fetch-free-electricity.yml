@@ -1,0 +1,47 @@
+name: Fetch Octopus Energy Flexibility Events
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  fetch-events:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          cd graphql
+          pip install -r requirements.txt
+      
+      - name: Fetch free electricity sessions
+        env:
+          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+          OUTPUT_FORMAT: json
+        run: |
+          cd graphql
+          python fes_finder_graphql.py
+      
+      - name: Fetch Power Up events (UKPN)
+        env:
+          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        run: |
+          cd graphql
+          python power_up_finder_graphql.py
+      
+      - name: Commit and push JSON files if changed
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add free_electricity_session_graphql.json powerup_graphql.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update free electricity events [automated action]" && git push)
