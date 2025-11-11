@@ -173,6 +173,12 @@ If you're interested in hosting this yourself, you can read more about:
 
 The main GitHub repository is here: [https://github.com/8none1/octopus_powerups](https://github.com/8none1/octopus_powerups)
 
+## Disclaimer
+
+**Use at your own risk.** This project is provided as-is for informational purposes. I take no responsibility for any actions taken based on this data, any automation failures, missed events, data inaccuracies, or any other consequences of using this service. Users are solely responsible for how they use this data and any automations they create with it.
+
+This is an independent project and is not affiliated with, endorsed by, or supported by Octopus Energy.
+
 ## Affiliate Code
 
 You can get £50 credit if you sign up to Octopus using this link: [https://share.octopus.energy/great-kiwi-634](https://share.octopus.energy/great-kiwi-634)
