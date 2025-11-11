@@ -84,6 +84,12 @@ The script automatically writes future sessions to a JSON file matching the Goog
 - **Sorting**: Sorted by `start` time (earliest first)
 - **Empty result**: If no future sessions, outputs `[{"start": null, "end": null, "code": null}]`
 
+### Field Descriptions
+
+- **`start`**: ISO 8601 timestamp (UTC) when the free electricity session begins
+- **`end`**: ISO 8601 timestamp (UTC) when the free electricity session ends
+- **`code`**: Unique event identifier assigned by Octopus Energy (e.g., `FREE_ELECTRICITY_EVENT_15_251025`). This code is used internally by Octopus to track specific flexibility events and can be useful for logging, debugging, or correlating events with Octopus communications
+
 Example output with sessions:
 
 ```json
