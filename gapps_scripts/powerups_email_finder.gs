@@ -1,5 +1,5 @@
 function getPowerUpEmails() {
-  var threads = GmailApp.search('subject:"Power-ups: Opt in"',0, 3);
+  var threads = GmailApp.search('subject:"Power Up" from:octopusenergy.it',0, 3);
   var messages = [];
   threads.forEach(function(thread) {
     messages.push(thread.getMessages()[0]);
@@ -70,30 +70,51 @@ function generateJson(){
   var powerups = [];
   messages.forEach(function(message) {
     var authentic = checkHeaders(message.getHeader('ARC-Authentication-Results'));
-    var subject_line = message.getSubject();
-    Logger.log("Subject line from API: " + subject_line);
-    const subject_line_regex = /.*[0-9]{2}\/[0-9]{2}\/(?:\d{4}|\d{2})/s;
-    var extract = subject_line.match(subject_line_regex);
-    Logger.log("Extracted text: " + extract);
-    if (extract.length == 1) { 
-      // if not, then???
-      const start_re = /(?<=at )([0-9]{2}|[0-9]):[0-9]{2} (AM|PM)/i;
-      const end_re = /(?<= - )([0-9]{2}|[0-9]):[0-9]{2} (AM|PM)/i;
-      const date_re = /([0-9]{2}|[0-9])\/([0-9]{2}|[0-9])\/(?:\d{4}|\d{2})/;
-      var date_str = extract[0].match(date_re)[0];
-      var start_str = extract[0].match(start_re)[0];
-      var end_str = extract[0].match(end_re)[0];
-      Logger.log("Date: "+date_str);
-      Logger.log("Start time: " + start_str);
-      Logger.log("End time: " + end_str);
-      if (date_str.slice(6).length == 2) {
-        var start_datetime_str = '20' + date_str.slice(6) + '-' + date_str.slice(3,5) + '-' + date_str.slice(0,2) + ' ' + convertTime(start_str);
-        var end_datetime_str   = '20' + date_str.slice(6) + '-' + date_str.slice(3,5) + '-' + date_str.slice(0,2) + ' ' + convertTime(end_str);
+    var body = message.getPlainBody();
+    Logger.log("Email body: " + body);
+
+    // Italian format: "tra le 13:00 e le 14:00"
+    const time_re = /tra le (\d{1,2}:\d{2}) e le (\d{1,2}:\d{2})/i;
+    var time_match = body.match(time_re);
+
+    if (time_match) {
+      var start_time = time_match[1];
+      var end_time = time_match[2];
+      Logger.log("Start time: " + start_time);
+      Logger.log("End time: " + end_time);
+
+      // Handle relative dates (Domani = tomorrow, oggi = today) or explicit DD/MM/YYYY
+      const date_re = /(domani|oggi|\d{1,2}\/\d{1,2}\/(?:\d{4}|\d{2}))/i;
+      var date_match = body.match(date_re);
+
+      var event_date;
+      if (date_match) {
+        var date_str = date_match[1].toLowerCase();
+        if (date_str === 'domani') {
+          event_date = new Date();
+          event_date.setDate(event_date.getDate() + 1);
+        } else if (date_str === 'oggi') {
+          event_date = new Date();
+        } else {
+          // Parse DD/MM/YYYY or DD/MM/YY
+          var parts = date_str.split('/');
+          var year = parts[2].length === 2 ? '20' + parts[2] : parts[2];
+          event_date = new Date(year + '-' + parts[1] + '-' + parts[0]);
+        }
       } else {
-        var start_datetime_str = date_str.slice(6) + '-' + date_str.slice(3,5) + '-' + date_str.slice(0,2) + ' ' + convertTime(start_str);
-        var end_datetime_str   = date_str.slice(6) + '-' + date_str.slice(3,5) + '-' + date_str.slice(0,2) + ' ' + convertTime(end_str);
-      };
-      //const end_datetime_str   = '20' + date_str.slice(6) + '-' + date_str.slice(3,5) + '-' + date_str.slice(0,2) + ' ' + convertTime(end_str);
+        // Default to tomorrow if no date indicator found
+        Logger.log("No date found in email, defaulting to tomorrow");
+        event_date = new Date();
+        event_date.setDate(event_date.getDate() + 1);
+      }
+
+      var year = event_date.getFullYear();
+      var month = String(event_date.getMonth() + 1).padStart(2, '0');
+      var day = String(event_date.getDate()).padStart(2, '0');
+      var date_prefix = year + '-' + month + '-' + day;
+
+      var start_datetime_str = date_prefix + ' ' + start_time + ':00';
+      var end_datetime_str = date_prefix + ' ' + end_time + ':00';
       const start_datetime = new Date(start_datetime_str);
       const end_datetime = new Date(end_datetime_str);
       Logger.log("Start datetime: " + start_datetime);
@@ -101,22 +122,17 @@ function generateJson(){
       const now = new Date();
 
       if (end_datetime < now) {
-        // The power up is in the past, so ignore it.
         Logger.log("Power up is in the past");
         return;
       }
-      Logger.log(start_datetime);
-      Logger.log(end_datetime);
       var powerup = {};
       powerup['start'] = start_datetime;
       powerup['end'] = end_datetime;
       powerups.push(powerup);
-    };
+    }
   })
   Logger.log(powerups);
   return powerups;
-
-  
 }
 
 function doGet(){
